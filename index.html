@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Where People Live vs Where Beds Are</title>
+    <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            background-color: #ffffff;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .main-title {
+            text-align: center;
+            font-size: 2.5em;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #2c3e50;
+        }
+
+        .subtitle {
+            text-align: center;
+            font-size: 1.1em;
+            margin-bottom: 40px;
+            color: #666;
+        }
+
+        .section {
+            margin-bottom: 50px;
+        }
+
+        .section-title {
+            font-size: 1.8em;
+            font-weight: bold;
+            margin-bottom: 20px;
+            color: #2c3e50;
+        }
+
+        /* Two Columns Layout */
+        .two-columns {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 30px;
+            align-items: start;
+        }
+
+        .chart-container {
+            background: #f9f9f9;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .text-content {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 8px;
+            border-left: 4px solid #3498db;
+        }
+
+        .text-content h3 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.3em;
+        }
+
+        .text-content p {
+            margin-bottom: 15px;
+            text-align: justify;
+            color: #555;
+        }
+
+        /* Two Charts on Top, Text Below - Full Width */
+        .charts-text-vertical {
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+        }
+
+        .two-charts-horizontal {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+
+        .two-charts-horizontal .chart-container {
+            min-height: 400px;
+        }
+        
+        .full-width-text {
+            width: 100%;
+        }
+
+        /* Combined Columns */
+        .combined-columns {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 30px;
+            align-items: start;
+        }
+
+        .combined-chart {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .combined-chart .chart-container {
+            min-height: 350px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .two-columns,
+            .combined-columns {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .two-charts-horizontal {
+                grid-template-columns: 1fr;
+            }
+            
+            .combined-chart {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-title {
+                font-size: 2em;
+            }
+            
+            .container {
+                padding: 15px;
+            }
+            
+            .section {
+                margin-bottom: 30px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="main-title">Where People Live vs Where Beds Are</h1>
+        <p class="subtitle">This dashboard demonstrates the relationship between population distribution and healthcare infrastructure across Malaysia</p>
+
+        <!-- Two Columns Layout -->
+        <div class="section">
+            <h2 class="section-title">Healthcare Infrastructure Overview</h2>
+            <div class="two-columns">
+                <div class="chart-container">
+                    <div id="beds-per-1000"></div>
+                </div>
+                <div class="text-content">
+                    <h3>Hospital Beds Distribution</h3>
+                    <p>This choropleth map shows the distribution of hospital beds per 1,000 people across Malaysian states. The color intensity represents the bed-to-population ratio, with darker colors indicating higher bed availability.</p>
+                    <p>Use the year slider to explore how this distribution has changed over time from 2015 to 2022. This visualization helps identify regions with adequate healthcare infrastructure versus those that may need more investment.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Two Charts on Top, Text Below -->
+        <div class="section">
+            <h2 class="section-title">Population Demographics Analysis</h2>
+            <div class="charts-text-vertical">
+                <div class="two-charts-horizontal">
+                    <div class="chart-container">
+                        <div id="population-by-age"></div>
+                    </div>
+                    <div class="chart-container">
+                        <div id="stacked-bar-chart"></div>
+                    </div>
+                </div>
+                <div class="text-content full-width-text">
+                    <h3>Demographic Insights</h3>
+                    <p>The left chart shows population distribution by age groups across states, revealing which regions have younger or older populations. This is crucial for healthcare planning as different age groups have varying healthcare needs.</p>
+                    <p>The right chart displays population by ethnicity and state, showing the diverse demographic composition of Malaysia. Understanding these patterns helps in planning culturally appropriate healthcare services.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Combined Columns -->
+        <div class="section">
+            <h2 class="section-title">Regional Trends and Comparisons</h2>
+            <div class="combined-columns">
+                <div class="text-content">
+                    <h3>Regional Analysis</h3>
+                    <p>This section compares trends between West and East Malaysia, showing how population and healthcare infrastructure have evolved differently across regions.</p>
+                    <p>The total trends chart reveals overall patterns in population growth and hospital bed availability, while the regional comparison highlights disparities between the two main regions of Malaysia.</p>
+                </div>
+                <div class="combined-chart">
+                    <div class="chart-container">
+                        <div id="total-trends"></div>
+                    </div>
+                    <div class="chart-container">
+                        <div id="west-vs-east"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Embed all visualizations
+        const bedsPer1000Spec = {
+            "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+            "description": "Malaysia: Hospital Beds per 1,000 People (2015-2022)",
+            "title": {
+                "text": "Malaysia: Hospital Beds per 1,000 People (2015-2022)",
+                "fontSize": 16,
+                "fontWeight": "bold",
+                "anchor": "start",
+                "color": "#2c3e50"
+            },
+            "width": 600,
+            "height": 400,
+            "background": "#cfeeff",
+            "params": [
+                {
+                    "name": "yearSelector",
+                    "value": 2020,
+                    "bind": {"input": "range", "min": 2015, "max": 2022, "step": 1}
+                }
+            ],
+            "layer": [
+                {
+                    "name": "graticule",
+                    "data": {"graticule": true},
+                    "mark": {"type": "geoshape", "stroke": "#b8d0e6", "strokeWidth": 0.6, "fill": null},
+                    "projection": {"type": "mercator", "center": [109, 4], "scale": 1000}
+                },
+                {
+                    "data": {
+                        "url": "https://raw.githubusercontent.com/jnewbery/CartogramMalaysia/9ac25c828e0306dfa2c2869f98eb2b357da69764/public/data/malaysia-states.topojson",
+                        "format": {"type": "topojson", "feature": "states"}
+                    },
+                    "mark": {"type": "geoshape", "fill": "#eeeeee", "stroke": "#ffffff", "strokeWidth": 0.6},
+                    "projection": {"type": "mercator", "center": [109, 4], "scale": 1000}
+                },
+                {
+                    "data": {
+                        "url": "https://raw.githubusercontent.com/ShiyiNinini/FIT3179_DV2/refs/heads/main/merged_population_hospital_final.csv",
+                        "format": {"type": "csv"}
+                    },
+                    "transform": [
+                        {"calculate": "year(toDate(datum.date))", "as": "year"},
+                        {"filter": "datum.sex == 'both' && datum.age == 'overall' && datum.type == 'all' && datum.ethnicity == 'overall'"},
+                        {"filter": "datum.year == yearSelector"},
+                        {"calculate": "toNumber(datum.beds)", "as": "beds_num"},
+                        {"calculate": "toNumber(datum.population) * 1000", "as": "pop_num"},
+                        {"calculate": "(datum.beds_num / datum.pop_num) * 1000", "as": "beds_per_1000"},
+                        {
+                            "lookup": "state",
+                            "from": {
+                                "data": {
+                                    "url": "https://raw.githubusercontent.com/jnewbery/CartogramMalaysia/9ac25c828e0306dfa2c2869f98eb2b357da69764/public/data/malaysia-states.topojson",
+                                    "format": {"type": "topojson", "feature": "states"}
+                                },
+                                "key": "properties.Name",
+                                "fields": ["type", "properties", "geometry"]
+                            }
+                        }
+                    ],
+                    "mark": {"type": "geoshape", "stroke": "#666666", "strokeWidth": 0.6},
+                    "encoding": {
+                        "color": {
+                            "field": "beds_per_1000",
+                            "type": "quantitative",
+                            "title": "Beds per 1,000 People",
+                            "scale": {
+                                "domain": [0, 3],
+                                "range": ["#ffffbf", "#fee08b", "#fdae61", "#f46d43", "#d73027", "#a50026"]
+                            },
+                            "legend": {
+                                "orient": "right",
+                                "titleLimit": 180,
+                                "symbolType": "square",
+                                "titleFontSize": 10,
+                                "labelFontSize": 9
+                            }
+                        },
+                        "tooltip": [
+                            {"field": "state", "title": "State"},
+                            {"field": "beds_num", "title": "Total Beds", "format": ","},
+                            {"field": "pop_num", "title": "Population", "format": ","},
+                            {"field": "beds_per_1000", "title": "Beds per 1,000", "format": ".2f"}
+                        ]
+                    },
+                    "projection": {"type": "mercator", "center": [109, 4], "scale": 1000}
+                }
+            ],
+            "config": {"view": {"stroke": "transparent"}, "axis": {"domain": false}}
+        };
+
+        const populationByAgeSpec = {
+            "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+            "description": "Malaysia: Population by Age Group and State",
+            "title": {
+                "text": "Population Distribution by Age Group",
+                "fontSize": 14,
+                "fontWeight": "bold",
+                "anchor": "start",
+                "color": "#2c3e50"
+            },
+            "width": 350,
+            "height": 300,
+            "background": "#f9f9f9",
+            "params": [
+                {
+                    "name": "yearSelector",
+                    "value": 2020,
+                    "bind": {"input": "range", "min": 2015, "max": 2022, "step": 1, "name": "Year: "}
+                },
+                {
+                    "name": "ageGroupSelect",
+                    "select": {"type": "point", "fields": ["age_category"]},
+                    "bind": "legend"
+                }
+            ],
+            "data": {
+                "url": "https://raw.githubusercontent.com/ShiyiNinini/FIT3179_homework9/refs/heads/main/population_state.csv",
+                "format": {"type": "csv"}
+            },
+            "transform": [
+                {"calculate": "year(toDate(datum.date))", "as": "year"},
+                {"filter": "datum.sex == 'both' && datum.ethnicity == 'overall'"},
+                {"filter": "datum.age != 'overall'"},
+                {"filter": "datum.year == yearSelector"},
+                {"calculate": "toNumber(datum.population) * 1000", "as": "pop_num"},
+                {
+                    "calculate": "datum.age == '0-4' || datum.age == '5-9' || datum.age == '10-14' ? 'Children (0-14)' : datum.age == '15-19' || datum.age == '20-24' || datum.age == '25-29' || datum.age == '30-34' || datum.age == '35-39' ? 'Young Adults (15-39)' : datum.age == '40-44' || datum.age == '45-49' || datum.age == '50-54' || datum.age == '55-59' ? 'Middle Aged (40-59)' : 'Seniors (60+)'",
+                    "as": "age_category"
+                },
+                {
+                    "aggregate": [{"op": "sum", "field": "pop_num", "as": "total_population"}],
+                    "groupby": ["state", "age_category"]
+                }
+            ],
+            "mark": {"type": "bar"},
+            "encoding": {
+                "x": {
+                    "field": "total_population",
+                    "type": "quantitative",
+                    "title": "Population",
+                    "axis": {"format": "~s", "labelFontSize": 9}
+                },
+                "y": {
+                    "field": "state",
+                    "type": "nominal",
+                    "title": "State",
+                    "sort": "-x",
+                    "axis": {"labelFontSize": 9}
+                },
+                "color": {
+                    "field": "age_category",
+                    "type": "nominal",
+                    "title": "Age Group",
+                    "scale": {
+                        "domain": ["Children (0-14)", "Young Adults (15-39)", "Middle Aged (40-59)", "Seniors (60+)"],
+                        "range": ["#fdae61", "#abd9e9", "#2c7bb6", "#d7191c"]
+                    },
+                    "legend": {
+                        "titleFontSize": 10,
+                        "labelFontSize": 9,
+                        "symbolSize": 100
+                    }
+                },
+                "opacity": {
+                    "condition": {"param": "ageGroupSelect", "value": 1},
+                    "value": 0.2
+                },
+                "tooltip": [
+                    {"field": "state", "title": "State"},
+                    {"field": "age_category", "title": "Age Group"},
+                    {"field": "total_population", "title": "Population", "format": ","}
+                ]
+            },
+            "config": {
+                "view": {"stroke": "transparent"},
+                "axis": {"grid": false}
+            }
+        };
+
+        const stackedBarSpec = {
+            "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+            "data": {"url": "https://raw.githubusercontent.com/ShiyiNinini/FIT3179_homework9/refs/heads/main/population_state.csv"},
+            "params": [
+                {
+                    "name": "sex_selection",
+                    "value": "both",
+                    "bind": {
+                        "input": "select",
+                        "options": ["male", "female", "both"],
+                        "labels": ["Male", "Female", "Both"],
+                        "name": "Gender: "
+                    }
+                },
+                {
+                    "name": "year",
+                    "value": 2020,
+                    "bind": {
+                        "input": "range",
+                        "min": 2015,
+                        "max": 2022,
+                        "step": 1,
+                        "name": "Year: "
+                    }
+                }
+            ],
+            "layer": [
+                {
+                    "transform": [
+                        {"filter": "datum.sex == sex_selection"},
+                        {"filter": "datum.age == 'overall'"},
+                        {"filter": "datum.ethnicity != 'overall'"},
+                        {"calculate": "year(datum.date)", "as": "year"},
+                        {"filter": "datum.year == year"}
+                    ],
+                    "mark": {"type": "bar"},
+                    "encoding": {
+                        "x": {
+                            "field": "state", 
+                            "type": "nominal", 
+                            "title": "State",
+                            "sort": null,
+                            "axis": {"labelFontSize": 9}
+                        },
+                        "y": {
+                            "field": "population",
+                            "type": "quantitative",
+                            "title": "Population (thousands)",
+                            "axis": {"labelFontSize": 9}
+                        },
+                        "color": {
+                            "field": "ethnicity", 
+                            "type": "nominal", 
+                            "title": "Ethnicity",
+                            "legend": {"titleFontSize": 10, "labelFontSize": 9}
+                        },
+                        "tooltip": [
+                            {"field": "state", "type": "nominal"},
+                            {"field": "ethnicity", "type": "nominal"},
+                            {"field": "population", "type": "quantitative", "title": "Population (thousands)"}
+                        ]
+                    }
+                },
+                {
+                    "transform": [
+                        {"filter": "datum.sex == sex_selection"},
+                        {"filter": "datum.age == 'overall'"},
+                        {"filter": "datum.ethnicity != 'overall'"},
+                        {"calculate": "year(datum.date)", "as": "year"},
+                        {"filter": "datum.year == year"},
+                        {
+                            "aggregate": [{"op": "sum", "field": "population", "as": "state_total"}],
+                            "groupby": ["state"]
+                        },
+                        {
+                            "window": [{"op": "rank", "as": "rank"}],
+                            "sort": [{"field": "state_total", "order": "descending"}]
+                        },
+                        {"filter": "datum.rank == 1"}
+                    ],
+                    "mark": {
+                        "type": "text",
+                        "align": "center",
+                        "dx" : -12 ,
+                        "fontSize": 10,
+                        "fontWeight": "bold",
+                        "color": "black"
+                    },
+                    "encoding": {
+                        "x": {
+                            "field": "state", 
+                            "type": "nominal", 
+                            "sort": null
+                        },
+                        "y": {"field": "state_total", "type": "quantitative"},
+                        "text": {"value": "Highest Population"}
+                    }
+                }
+            ],
+            "title": {
+                "text": "Population by State and Ethnicity",
+                "fontSize": 14,
+                "fontWeight": "bold",
+                "anchor": "start",
+                "color": "#333"
+            },
+            "width": 350,
+            "height": 300,
+            "config": {
+                "view": {"stroke": "transparent"},
+                "axis": {"labelFontSize": 9, "titleFontSize": 10}
+            }
+        };
+
+        const totalTrendsSpec = {
+            "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+            "description": "Malaysia: Population and Hospital Beds Trend",
+            "title": {
+                "text": "Population and Hospital Beds Trend",
+                "fontSize": 14,
+                "fontWeight": "bold",
+                "anchor": "start",
+                "color": "#2c3e50"
+            },
+            "width": 320,
+            "height": 280,
+            "background": "#f9f9f9",
+            "data": {
+                "url": "https://raw.githubusercontent.com/ShiyiNinini/FIT3179_DV2/refs/heads/main/merged_population_hospital_final.csv",
+                "format": {"type": "csv"}
+            },
+            "transform": [
+                {"calculate": "year(toDate(datum.date))", "as": "year"},
+                {"filter": "datum.sex == 'both' && datum.age == 'overall' && datum.ethnicity == 'overall' && datum.type == 'all'"},
+                {"calculate": "toNumber(datum.population) * 1000", "as": "pop_num"},
+                {"calculate": "toNumber(datum.beds)", "as": "beds_num"},
+                {
+                    "aggregate": [
+                        {"op": "sum", "field": "pop_num", "as": "total_population"},
+                        {"op": "sum", "field": "beds_num", "as": "total_beds"}
+                    ],
+                    "groupby": ["year"]
+                },
+                {"calculate": "datum.total_beds / 1000", "as": "beds_in_thousands"}
+            ],
+            "encoding": {
+                "x": {
+                    "field": "year",
+                    "type": "ordinal",
+                    "title": "Year",
+                    "axis": {"labelAngle": 0, "labelFontSize": 9}
+                }
+            },
+            "layer": [
+                {
+                    "mark": {
+                        "type": "line",
+                        "point": {"filled": true, "size": 60},
+                        "strokeWidth": 2,
+                        "color": "#2c7bb6"
+                    },
+                    "encoding": {
+                        "y": {
+                            "field": "total_population",
+                            "type": "quantitative",
+                            "title": "Population",
+                            "axis": {
+                                "titleColor": "#2c7bb6",
+                                "labelColor": "#2c7bb6",
+                                "format": "~s",
+                                "labelFontSize": 9,
+                                "titleFontSize": 10
+                            }
+                        },
+                        "tooltip": [
+                            {"field": "year", "title": "Year"},
+                            {"field": "total_population", "title": "Population", "format": ","}
+                        ]
+                    }
+                },
+                {
+                    "mark": {
+                        "type": "line",
+                        "point": {"filled": true, "size": 60},
+                        "strokeWidth": 2,
+                        "color": "#d7191c"
+                    },
+                    "encoding": {
+                        "y": {
+                            "field": "beds_in_thousands",
+                            "type": "quantitative",
+                            "title": "Hospital Beds (thousands)",
+                            "axis": {
+                                "titleColor": "#d7191c",
+                                "labelColor": "#d7191c",
+                                "format": ".1f",
+                                "labelFontSize": 9,
+                                "titleFontSize": 10,
+                                "orient": "right"
+                            },
+                            "scale": {"domain": [40, 55]}
+                        },
+                        "tooltip": [
+                            {"field": "year", "title": "Year"},
+                            {"field": "total_beds", "title": "Hospital Beds", "format": ","}
+                        ]
+                    }
+                }
+            ],
+            "resolve": {"scale": {"y": "independent"}},
+            "config": {
+                "view": {"stroke": "transparent"},
+                "axis": {"grid": true, "gridOpacity": 0.2}
+            }
+        };
+
+        const westVsEastSpec = {
+            "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+            "description": "Malaysia: Population and Hospital Beds Trend by Region",
+            "title": {
+                "text": "East vs West Malaysia Trends",
+                "fontSize": 14,
+                "fontWeight": "bold",
+                "anchor": "start",
+                "color": "#2c3e50"
+            },
+            "width": 320,
+            "height": 280,
+            "background": "#f9f9f9",
+            "data": {
+                "url": "https://raw.githubusercontent.com/ShiyiNinini/FIT3179_DV2/refs/heads/main/merged_population_hospital_final.csv",
+                "format": {"type": "csv"}
+            },
+            "transform": [
+                {"calculate": "year(toDate(datum.date))", "as": "year"},
+                {"filter": "datum.sex == 'both' && datum.age == 'overall' && datum.ethnicity == 'overall' && datum.type == 'all'"},
+                {"calculate": "toNumber(datum.population) * 1000", "as": "pop_num"},
+                {"calculate": "toNumber(datum.beds)", "as": "beds_num"},
+                {
+                    "calculate": "datum.state == 'Sabah' || datum.state == 'Sarawak' || datum.state == 'Labuan' ? 'East Malaysia' : 'West Malaysia'",
+                    "as": "region"
+                },
+                {
+                    "aggregate": [
+                        {"op": "sum", "field": "pop_num", "as": "total_population"},
+                        {"op": "sum", "field": "beds_num", "as": "total_beds"}
+                    ],
+                    "groupby": ["year", "region"]
+                },
+                {"calculate": "datum.total_beds / 1000", "as": "beds_in_thousands"}
+            ],
+            "encoding": {
+                "x": {
+                    "field": "year",
+                    "type": "ordinal",
+                    "title": "Year",
+                    "axis": {"labelAngle": 0, "labelFontSize": 9}
+                }
+            },
+            "layer": [
+                {
+                    "mark": {
+                        "type": "line",
+                        "point": {"filled": true, "size": 60},
+                        "strokeWidth": 2
+                    },
+                    "encoding": {
+                        "y": {
+                            "field": "total_population",
+                            "type": "quantitative",
+                            "title": "Population",
+                            "axis": {
+                                "titleColor": "#1f77b4",
+                                "labelColor": "#1f77b4",
+                                "format": "~s",
+                                "labelFontSize": 9,
+                                "titleFontSize": 10
+                            }
+                        },
+                        "color": {
+                            "field": "region",
+                            "type": "nominal",
+                            "scale": {
+                                "domain": ["West Malaysia", "East Malaysia"],
+                                "range": ["#1f77b4", "#17becf"]
+                            },
+                            "legend": {
+                                "title": "Region - Population",
+                                "orient": "top-right",
+                                "offset": 5,
+                                "titleFontSize": 9,
+                                "labelFontSize": 8
+                            }
+                        },
+                        "strokeDash": {
+                            "field": "region",
+                            "type": "nominal",
+                            "scale": {
+                                "domain": ["West Malaysia", "East Malaysia"],
+                                "range": [[1, 0], [5, 5]]
+                            },
+                            "legend": null
+                        },
+                        "tooltip": [
+                            {"field": "year", "title": "Year"},
+                            {"field": "region", "title": "Region"},
+                            {"field": "total_population", "title": "Population", "format": ","}
+                        ]
+                    }
+                },
+                {
+                    "mark": {
+                        "type": "line",
+                        "point": {"filled": true, "size": 60},
+                        "strokeWidth": 2
+                    },
+                    "encoding": {
+                        "y": {
+                            "field": "beds_in_thousands",
+                            "type": "quantitative",
+                            "title": "Hospital Beds (thousands)",
+                            "axis": {
+                                "titleColor": "#d62728",
+                                "labelColor": "#d62728",
+                                "format": ".1f",
+                                "labelFontSize": 9,
+                                "titleFontSize": 10,
+                                "orient": "right"
+                            },
+                            "scale": {"domain": [0, 45]}
+                        },
+                        "color": {
+                            "field": "region",
+                            "type": "nominal",
+                            "scale": {
+                                "domain": ["West Malaysia", "East Malaysia"],
+                                "range": ["#d62728", "#ff7f0e"]
+                            }
+                        },
+                        "strokeDash": {
+                            "field": "region",
+                            "type": "nominal",
+                            "scale": {
+                                "domain": ["West Malaysia", "East Malaysia"],
+                                "range": [[1, 0], [5, 5]]
+                            },
+                            "legend": null
+                        },
+                        "tooltip": [
+                            {"field": "year", "title": "Year"},
+                            {"field": "region", "title": "Region"},
+                            {"field": "total_beds", "title": "Hospital Beds", "format": ","}
+                        ]
+                    }
+                }
+            ],
+            "resolve": {"scale": {"y": "independent"}},
+            "config": {
+                "view": {"stroke": "transparent"},
+                "axis": {"grid": true, "gridOpacity": 0.2}
+            }
+        };
+
+        // Embed all visualizations
+        vegaEmbed('#beds-per-1000', bedsPer1000Spec);
+        vegaEmbed('#population-by-age', populationByAgeSpec);
+        vegaEmbed('#stacked-bar-chart', stackedBarSpec);
+        vegaEmbed('#total-trends', totalTrendsSpec, {actions: false});
+        vegaEmbed('#west-vs-east', westVsEastSpec, {actions: false});
+    </script>
+</body>
+</html>
+</html>
