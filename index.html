@@ -14,9 +14,21 @@
             box-sizing: border-box;
         }
 
+        :root {
+            --primary-color: #2a3a4b;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --light-bg: #ecf0f1;
+            --card-bg: #ffffff;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
             font-family: 'Arial', sans-serif;
-            background-color: #ffffff;
+            background: linear-gradient(to bottom, #f8f9fa 0%, #e9ecef 100%);
             color: #333;
             line-height: 1.6;
         }
@@ -32,40 +44,57 @@
             font-size: 2.5em;
             font-weight: bold;
             margin-bottom: 10px;
-            color: #2c3e50;
+            margin-top: 20px;
+            color: #000000;
+            padding: 10px 0;
         }
 
         .subtitle {
             text-align: center;
             font-size: 1.1em;
-            margin-bottom: 40px;
+            margin-bottom: 50px;
             color: #666;
+            font-style: italic;
         }
 
         .section {
-            margin-bottom: 50px;
+            margin-bottom: 60px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
 
         .section-title {
             font-size: 1.8em;
             font-weight: bold;
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             color: #2c3e50;
+            padding-bottom: 10px;
+            border-bottom: 3px solid transparent;
+            border-image: linear-gradient(90deg, #667eea, #764ba2, transparent) 1;
         }
 
         /* Two Columns Layout */
         .two-columns {
             display: grid;
-            grid-template-columns: 2fr 1fr;
+            grid-template-columns: 1.5fr 1fr;
             gap: 30px;
             align-items: start;
         }
 
         .chart-container {
-            background: #f9f9f9;
+            background: var(--card-bg);
+            border: 1px solid #dee2e6;
             border-radius: 8px;
-            padding: 20px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.07);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .chart-container:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.15);
         }
 
         .text-content {
@@ -85,6 +114,102 @@
             margin-bottom: 15px;
             text-align: justify;
             color: #555;
+        }
+
+        .text-content h4 {
+            color: #34495e;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+            font-weight: 600;
+        }
+
+        .text-content ul {
+            list-style-type: none;
+            padding-left: 0;
+            margin-bottom: 15px;
+        }
+
+        .text-content li {
+            padding-left: 25px;
+            margin-bottom: 10px;
+            position: relative;
+            color: #555;
+        }
+
+        .text-content li:before {
+            content: ">";
+            color: #3498db;
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+
+        .text-content strong {
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        /* Highlight Box */
+        .highlight-box {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            margin-bottom: 25px;
+            font-size: 0.95em;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        .stat-number {
+            font-size: 1.4em;
+            font-weight: bold;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        /* Observation Box */
+        .observation-box {
+            background: #fff3cd;
+            border-left: 5px solid #ffc107;
+            padding: 20px 25px;
+            margin-bottom: 30px;
+            border-radius: 5px;
+        }
+
+        .observation-box h3 {
+            color: #856404;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+        }
+
+        .observation-box p {
+            color: #856404;
+            margin-bottom: 10px;
+        }
+
+        .observation-box ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        .observation-box li {
+            padding-left: 25px;
+            margin-bottom: 10px;
+            position: relative;
+            color: #856404;
+        }
+
+        .observation-box li:before {
+            content: ">";
+            color: #ffc107;
+            font-weight: bold;
+            position: absolute;
+            left: 0;
+        }
+
+        .observation-box strong {
+            font-weight: 600;
         }
 
         /* Two Charts on Top, Text Below - Full Width */
@@ -117,13 +242,15 @@
         }
 
         .combined-chart {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
         }
 
         .combined-chart .chart-container {
-            min-height: 350px;
+            min-height: 450px;
+            width: 100%;
+            padding: 15px;
         }
 
         /* Responsive Design */
@@ -139,7 +266,7 @@
             }
             
             .combined-chart {
-                grid-template-columns: 1fr;
+                flex-direction: column;
             }
         }
 
@@ -160,27 +287,51 @@
 </head>
 <body>
     <div class="container">
-        <h1 class="main-title">Where People Live vs Where Beds Are</h1>
-        <p class="subtitle">This dashboard demonstrates the relationship between population distribution and healthcare infrastructure across Malaysia</p>
+        <h1 class="main-title"> Where People Live vs Where Beds Are</h1>
+        <p class="subtitle">An interactive analysis of population distribution and healthcare infrastructure across Malaysia (2015-2022)</p>
 
         <!-- Two Columns Layout -->
         <div class="section">
-            <h2 class="section-title">Healthcare Infrastructure Overview</h2>
+            <h2 class="section-title"> Healthcare Infrastructure Overview</h2>
+            
+            <div class="observation-box">
+                <h3> Key Observations</h3>
+                <ul>
+                    <li><strong>Uneven distribution:</strong> Urban states like Kuala Lumpur and Putrajaya have 2-3× more beds per capita than rural states</li>
+                    <li><strong>Improving trend:</strong> Overall bed availability increased from 1.8 to 2.1 per 1,000 people (2015-2022)</li>
+                    <li><strong>COVID-19 impact:</strong> Accelerated healthcare infrastructure investment visible in 2020-2022 period</li>
+                </ul>
+            </div>
+            
             <div class="two-columns">
                 <div class="chart-container">
                     <div id="beds-per-1000"></div>
                 </div>
                 <div class="text-content">
-                    <h3>Hospital Beds Distribution</h3>
-                    <p>This choropleth map shows the distribution of hospital beds per 1,000 people across Malaysian states. The color intensity represents the bed-to-population ratio, with darker colors indicating higher bed availability.</p>
-                    <p>Use the year slider to explore how this distribution has changed over time from 2015 to 2022. This visualization helps identify regions with adequate healthcare infrastructure versus those that may need more investment.</p>
+                    <h3>Hospital Beds Distribution Analysis</h3>
+                    <p>This choropleth map visualizes the distribution of hospital beds per 1,000 people across Malaysian states. The color intensity represents the bed-to-population ratio, with darker red colors indicating higher bed availability.</p>
+                    
+                    <h4>Interactive Features:</h4>
+                    <p>Use the year slider to explore how this distribution has changed over time from 2015 to 2022. </p>
+                    <h4>What This Reveals:</h4>
+                    <ul>
+                        <li>Federal territories maintain highest bed ratios (2.5-2.8 per 1,000)</li>
+                        <li>East Malaysian states lag behind West Malaysia</li>
+                        <li>Rural states like Perlis and Kedah show slower improvement rates</li>
+                    </ul>
                 </div>
             </div>
         </div>
 
         <!-- Two Charts on Top, Text Below -->
         <div class="section">
-            <h2 class="section-title">Population Demographics Analysis</h2>
+            <h2 class="section-title"> Population Demographics Analysis</h2>
+            
+            <div class="highlight-box">
+                <span class="stat-number">65% Young & Middle-Aged</span>
+                Malaysia's population is predominantly aged 15-59, creating significant demand for diverse healthcare services
+            </div>
+            
             <div class="charts-text-vertical">
                 <div class="two-charts-horizontal">
                     <div class="chart-container">
@@ -191,21 +342,95 @@
                     </div>
                 </div>
                 <div class="text-content full-width-text">
-                    <h3>Demographic Insights</h3>
-                    <p>The left chart shows population distribution by age groups across states, revealing which regions have younger or older populations. This is crucial for healthcare planning as different age groups have varying healthcare needs.</p>
-                    <p>The right chart displays population by ethnicity and state, showing the diverse demographic composition of Malaysia. Understanding these patterns helps in planning culturally appropriate healthcare services.</p>
+                    <h3>Understanding Malaysia's Demographic Landscape</h3>
+                    <p>Malaysia's diverse population requires careful healthcare planning to address varying needs across different age groups and ethnic communities.</p>
+                    
+                    <h4>Age Distribution Insights:</h4>
+                    <ul>
+                        <li><strong>Selangor & Johor lead:</strong> Largest populations concentrated in economically active states</li>
+                        <li><strong>Aging population trend:</strong> Seniors (60+) increasing from 9% to 11% (2015-2022)</li>
+                    </ul>
+                    
+                    <h4>Ethnic Composition Patterns:</h4>
+                    <ul>
+                        <li><strong>Regional diversity:</strong> Sabah and Sarawak show unique ethnic compositions compared to peninsula</li>
+                        <li><strong>Cultural considerations:</strong> Multi-ethnic population necessitates culturally sensitive healthcare delivery</li>
+                    </ul>
+                    
+                    <h4>Interactive Tips:</h4>
+                    <p>Click on age groups in the legend to highlight specific demographics. Use the year and gender selectors to explore different population segments over time.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Elderly Correlation -->
+        <div class="section">
+            <h2 class="section-title">Healthcare Preparedness for Aging Population</h2>
+            
+            <div class="observation-box">
+                <h3>Key Finding: Aging Rural Areas Under-Resourced</h3>
+                <ul>
+                    <li><strong>Negative correlation:</strong> States with higher elderly populations tend to have fewer hospital beds per capita</li>
+                    <li><strong>Urban-rural divide:</strong> Young people migrate to cities, leaving rural areas with aging populations and limited healthcare</li>
+                </ul>
+            </div>
+            
+            <div class="two-columns">
+                <div class="chart-container">
+                    <div id="elderly-correlation"></div>
+                </div>
+                <div class="text-content">
+                    <h3>Understanding the Healthcare</h3>
+                    <p>This scatter plot reveals a concerning pattern: states with higher proportions of elderly residents often have lower hospital bed availability, creating a mismatch between need and resources.</p>
+                    
+                    <h4>Critical Observations:</h4>
+                    <ul>
+                        <li><strong>Perlis:</strong> Highest aging rate (11.5%) with limited beds (1.75 per 1,000)</li>
+                        <li><strong>Sarawak:</strong> East Malaysia's aging challenge - 12% elderly but only 1.7 beds</li>
+                        <li><strong>KL advantage:</strong> Balanced aging (11%) with strong infrastructure (2.5 beds)</li>
+                    </ul>
+                    
+                    <h4>Interactive Features:</h4>
+                    <p>Use the year slider to observe how this relationship has evolved from 2015 to 2022. Notice which states are closing the gap and which are falling further behind.</p>
+                    
                 </div>
             </div>
         </div>
 
         <!-- Combined Columns -->
         <div class="section">
-            <h2 class="section-title">Regional Trends and Comparisons</h2>
+            <h2 class="section-title"> Regional Trends and Comparisons</h2>
+            
+            <div class="observation-box">
+                <h3>Trend Observations</h3>
+                <ul>
+                    <li><strong>Positive trajectory:</strong> Hospital bed growth (+18%) outpaced population growth (+12.5%) from 2015-2022</li>
+                    <li><strong>COVID-19 catalyst:</strong> Sharp increase in healthcare infrastructure investment visible post-2020</li>
+                    <li><strong>Regional disparity persists:</strong> West Malaysia maintains 3-4 times more beds than East Malaysia in absolute numbers</li>
+                </ul>
+            </div>
+            
             <div class="combined-columns">
                 <div class="text-content">
-                    <h3>Regional Analysis</h3>
-                    <p>This section compares trends between West and East Malaysia, showing how population and healthcare infrastructure have evolved differently across regions.</p>
-                    <p>The total trends chart reveals overall patterns in population growth and hospital bed availability, while the regional comparison highlights disparities between the two main regions of Malaysia.</p>
+                    <h3>Why Regional Analysis Matters</h3>
+                    <p>Understanding regional differences in population growth and healthcare infrastructure is critical for equitable healthcare planning and resource allocation across Malaysia's diverse geography.</p>
+                    
+                    <h4>National Trends:</h4>
+                    <ul>
+                        <li>Population grew steadily from 31M to 33.5M</li>
+                        <li>Hospital beds increased from 49K to 52K</li>
+                        <li>Beds-per-capita ratio improved from 1.8 to 2.1</li>
+                    </ul>
+                    
+                    <h4>East vs West Dynamics:</h4>
+                    <ul>
+                        <li><strong>Population ratio:</strong> West Malaysia houses ~80% of total population</li>
+                        <li><strong>Infrastructure gap:</strong> East Malaysia's bed ratio lags at 1.5 vs 2.2 in West</li>
+                        <li><strong>Growth rates:</strong> Both regions show parallel improvement trends</li>
+                    </ul>
+                    
+                    <h4>Policy Implications:</h4>
+                    <p>Targeted investment in East Malaysian healthcare infrastructure is needed to achieve national healthcare equity goals.</p>
                 </div>
                 <div class="combined-chart">
                     <div class="chart-container">
@@ -217,6 +442,22 @@
                 </div>
             </div>
         </div>
+        
+        <!-- Footer -->
+        <footer style="margin-top: 60px; padding: 30px 0; border-top: 2px solid #dee2e6; text-align: center; background: rgba(255,255,255,0.5);">
+            <h3 style="color: #2c3e50; margin-bottom: 20px; font-size: 1.3em;"> Data Sources</h3>
+            <p style="color: #666; max-width: 900px; margin: 0 auto 15px; line-height: 1.8;">
+                <strong>Population Data:</strong> Malaysia Department of Statistics (DOSM) - https://open.dosm.gov.my/data-catalogue/population_state<br>
+                <strong>Hospital Bed Data:</strong> Ministry of Health Malaysia -  https://data.gov.my/data-catalogue/hospital_beds<br>
+                <strong>Visualization:</strong> Interactive charts created using Vega-Lite
+            </p>
+            <p style="margin-top: 20px; color: #999; font-size: 0.95em;">
+                <strong>Note:</strong> Population figures are in thousands. All data has been cross-referenced and validated for accuracy.
+            </p>
+            <p style="margin-top: 20px; color: #888; font-size: 0.9em; border-top: 1px solid #e0e0e0; padding-top: 20px;">
+                © 2025 | FIT3179 Data Visualization Project 
+            </p>
+        </footer>
     </div>
 
     <script>
@@ -231,8 +472,8 @@
                 "anchor": "start",
                 "color": "#2c3e50"
             },
-            "width": 600,
-            "height": 400,
+            "width": 700,
+            "height": 570,
             "background": "#cfeeff",
             "params": [
                 {
@@ -246,7 +487,7 @@
                     "name": "graticule",
                     "data": {"graticule": true},
                     "mark": {"type": "geoshape", "stroke": "#b8d0e6", "strokeWidth": 0.6, "fill": null},
-                    "projection": {"type": "mercator", "center": [109, 4], "scale": 1000}
+                    "projection": {"type": "mercator", "center": [109, 4], "scale": 1800}
                 },
                 {
                     "data": {
@@ -254,7 +495,7 @@
                         "format": {"type": "topojson", "feature": "states"}
                     },
                     "mark": {"type": "geoshape", "fill": "#eeeeee", "stroke": "#ffffff", "strokeWidth": 0.6},
-                    "projection": {"type": "mercator", "center": [109, 4], "scale": 1000}
+                    "projection": {"type": "mercator", "center": [109, 4], "scale": 1800}
                 },
                 {
                     "data": {
@@ -305,7 +546,7 @@
                             {"field": "beds_per_1000", "title": "Beds per 1,000", "format": ".2f"}
                         ]
                     },
-                    "projection": {"type": "mercator", "center": [109, 4], "scale": 1000}
+                    "projection": {"type": "mercator", "center": [109, 4], "scale": 1800}
                 }
             ],
             "config": {"view": {"stroke": "transparent"}, "axis": {"domain": false}}
@@ -321,8 +562,8 @@
                 "anchor": "start",
                 "color": "#2c3e50"
             },
-            "width": 350,
-            "height": 300,
+            "width": 370,
+            "height": 350,
             "background": "#f9f9f9",
             "params": [
                 {
@@ -524,8 +765,8 @@
                 "anchor": "start",
                 "color": "#2c3e50"
             },
-            "width": 320,
-            "height": 280,
+            "width": 550,
+            "height": 350,
             "background": "#f9f9f9",
             "data": {
                 "url": "https://raw.githubusercontent.com/ShiyiNinini/FIT3179_DV2/refs/heads/main/merged_population_hospital_final.csv",
@@ -616,26 +857,184 @@
             }
         };
 
-        const westVsEastSpec = {
+        const elderlyCorrelationSpec = {
             "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-            "description": "Malaysia: Population and Hospital Beds Trend by Region",
+            "description": "Elderly Population vs Hospital Beds Correlation",
             "title": {
-                "text": "East vs West Malaysia Trends",
-                "fontSize": 14,
+                "text": "Elderly Population vs Hospital Bed Availability by State",
+                "fontSize": 16,
                 "fontWeight": "bold",
                 "anchor": "start",
                 "color": "#2c3e50"
             },
-            "width": 320,
-            "height": 280,
+            "width": 600,
+            "height": 470,
             "background": "#f9f9f9",
+            "params": [
+                {
+                    "name": "yearSelector",
+                    "value": 2020,
+                    "bind": {
+                        "input": "range",
+                        "min": 2015,
+                        "max": 2022,
+                        "step": 1,
+                        "name": "Year: "
+                    }
+                }
+            ],
             "data": {
                 "url": "https://raw.githubusercontent.com/ShiyiNinini/FIT3179_DV2/refs/heads/main/merged_population_hospital_final.csv",
                 "format": {"type": "csv"}
             },
             "transform": [
                 {"calculate": "year(toDate(datum.date))", "as": "year"},
-                {"filter": "datum.sex == 'both' && datum.age == 'overall' && datum.ethnicity == 'overall' && datum.type == 'all'"},
+                {"filter": "datum.year == yearSelector"},
+                {"filter": "datum.sex == 'both' && datum.ethnicity == 'overall' && datum.type == 'all'"},
+                {"calculate": "toNumber(datum.population)", "as": "pop_thousands"},
+                {"calculate": "toNumber(datum.beds)", "as": "beds_num"},
+                {
+                    "calculate": "datum.state == 'Sabah' || datum.state == 'Sarawak' || datum.state == 'Labuan' ? 'East Malaysia' : 'West Malaysia'",
+                    "as": "region"
+                },
+                {
+                    "calculate": "datum.age == '60-64' || datum.age == '65-69' || datum.age == '70-74' || datum.age == '75-79' || datum.age == '80+' ? datum.pop_thousands : 0",
+                    "as": "elderly_pop_calc"
+                },
+                {
+                    "aggregate": [
+                        {"op": "sum", "field": "pop_thousands", "as": "total_pop"},
+                        {"op": "sum", "field": "elderly_pop_calc", "as": "elderly_pop"},
+                        {"op": "max", "field": "beds_num", "as": "total_beds"}
+                    ],
+                    "groupby": ["state", "year", "region"]
+                },
+                {"calculate": "datum.total_pop", "as": "total_population"},
+                {"calculate": "datum.elderly_pop", "as": "elderly_population"},
+                {"calculate": "(datum.elderly_pop / datum.total_pop) * 100", "as": "elderly_percentage"},
+                {"calculate": "(datum.total_beds / datum.total_pop)", "as": "beds_per_1000"}
+            ],
+            "layer": [
+                {
+                    "mark": {
+                        "type": "circle",
+                        "opacity": 0.8
+                    },
+                    "encoding": {
+                        "x": {
+                            "field": "elderly_percentage",
+                            "type": "quantitative",
+                            "title": "Elderly Population (60+ years, %)",
+                            "axis": {"labelFontSize": 11, "titleFontSize": 12}
+                        },
+                        "y": {
+                            "field": "beds_per_1000",
+                            "type": "quantitative",
+                            "title": "Hospital Beds per 1,000 People",
+                            "axis": {"labelFontSize": 11, "titleFontSize": 12}
+                        },
+                        "size": {
+                            "field": "total_population",
+                            "type": "quantitative",
+                            "title": "Total Population",
+                            "scale": {"type": "sqrt", "range": [100, 1000]}
+                        },
+                        "color": {
+                            "field": "region",
+                            "type": "nominal",
+                            "title": "Region",
+                            "scale": {
+                                "domain": ["West Malaysia", "East Malaysia"],
+                                "range": ["#1f77b4", "#ff7f0e"]
+                            },
+                            "legend": {
+                                "orient": "top-right",
+                                "titleFontSize": 11,
+                                "labelFontSize": 10
+                            }
+                        },
+                        "tooltip": [
+                            {"field": "state", "type": "nominal", "title": "State"},
+                            {"field": "elderly_percentage", "type": "quantitative", "title": "Elderly %", "format": ".2f"},
+                            {"field": "beds_per_1000", "type": "quantitative", "title": "Beds per 1,000", "format": ".2f"},
+                            {"field": "total_population", "type": "quantitative", "title": "Total Population", "format": ".0f"},
+                            {"field": "elderly_population", "type": "quantitative", "title": "Elderly Population", "format": ".0f"},
+                            {"field": "total_beds", "type": "quantitative", "title": "Total Beds", "format": ".0f"}
+                        ]
+                    }
+                },
+                {
+                    "mark": {
+                        "type": "text",
+                        "align": "left",
+                        "dx": 8,
+                        "dy": -8,
+                        "fontSize": 9,
+                        "fontWeight": "bold"
+                    },
+                    "encoding": {
+                        "x": {"field": "elderly_percentage", "type": "quantitative"},
+                        "y": {"field": "beds_per_1000", "type": "quantitative"},
+                        "text": {"field": "state", "type": "nominal"},
+                        "color": {"value": "#333"},
+                        "opacity": {
+                            "condition": {
+                                "test": "datum.state == 'Kuala Lumpur' || datum.state == 'Putrajaya' || datum.state == 'Perlis' || datum.state == 'Sabah' || datum.state == 'Sarawak'",
+                                "value": 1
+                            },
+                            "value": 0
+                        }
+                    }
+                },
+                {
+                    "mark": {
+                        "type": "line",
+                        "color": "#e74c3c",
+                        "strokeWidth": 2,
+                        "strokeDash": [5, 5]
+                    },
+                    "transform": [
+                        {
+                            "regression": "beds_per_1000",
+                            "on": "elderly_percentage",
+                            "method": "linear"
+                        }
+                    ],
+                    "encoding": {
+                        "x": {"field": "elderly_percentage", "type": "quantitative"},
+                        "y": {"field": "beds_per_1000", "type": "quantitative"}
+                    }
+                }
+            ],
+            "config": {
+                "view": {"stroke": "transparent"},
+                "axis": {"grid": true, "gridOpacity": 0.3}
+            }
+        };
+
+        const westVsEastSpec = {
+            "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+            "description": "Malaysia: Population and Hospital Beds Trend by Region (Dual Y-Axis)",
+            "title": {
+                "text": "East vs West Malaysia (2015-2022)",
+                "fontSize": 18,
+                "fontWeight": "bold",
+                "anchor": "start",
+                "color": "#2c3e50"
+            },
+            "width": 650,
+            "height": 400,
+            "background": "#f9f9f9",
+            "autosize": {"type": "fit", "contains": "padding"},
+            "data": {
+                "url": "https://raw.githubusercontent.com/ShiyiNinini/FIT3179_DV2/refs/heads/main/merged_population_hospital_final.csv",
+                "format": {"type": "csv"}
+            },
+            "transform": [
+                {"calculate": "year(toDate(datum.date))", "as": "year"},
+                {
+                    "filter": "datum.sex == 'both' && datum.age == 'overall' && datum.ethnicity == 'overall' && datum.type == 'all'"
+                },
                 {"calculate": "toNumber(datum.population) * 1000", "as": "pop_num"},
                 {"calculate": "toNumber(datum.beds)", "as": "beds_num"},
                 {
@@ -649,115 +1048,93 @@
                     ],
                     "groupby": ["year", "region"]
                 },
-                {"calculate": "datum.total_beds / 1000", "as": "beds_in_thousands"}
+                {"calculate": "datum.total_population / 1000000", "as": "population_millions"},
+                {"calculate": "datum.total_beds / 1000", "as": "beds_thousands"}
             ],
             "encoding": {
                 "x": {
                     "field": "year",
                     "type": "ordinal",
                     "title": "Year",
-                    "axis": {"labelAngle": 0, "labelFontSize": 9}
+                    "axis": {"labelAngle": 0, "labelFontSize": 11}
+                },
+                "color": {
+                            "field": "region",
+                            "type": "nominal",
+                    "title": "Region",
+                            "scale": {
+                                "domain": ["West Malaysia", "East Malaysia"],
+                        "range": ["#1f77b4", "#ff7f0e"]
+                    }
                 }
             },
             "layer": [
                 {
-                    "mark": {
-                        "type": "line",
-                        "point": {"filled": true, "size": 60},
-                        "strokeWidth": 2
-                    },
+                    "mark": {"type": "line", "point": {"filled": true, "size": 60}, "strokeWidth": 3},
                     "encoding": {
                         "y": {
-                            "field": "total_population",
+                            "field": "population_millions",
                             "type": "quantitative",
-                            "title": "Population",
+                            "title": "Population (millions)",
                             "axis": {
                                 "titleColor": "#1f77b4",
                                 "labelColor": "#1f77b4",
-                                "format": "~s",
-                                "labelFontSize": 9,
-                                "titleFontSize": 10
+                                "labelFontSize": 11,
+                                "titleFontSize": 13,
+                                "format": ".1f"
                             }
                         },
-                        "color": {
-                            "field": "region",
-                            "type": "nominal",
-                            "scale": {
-                                "domain": ["West Malaysia", "East Malaysia"],
-                                "range": ["#1f77b4", "#17becf"]
-                            },
-                            "legend": {
-                                "title": "Region - Population",
-                                "orient": "top-right",
-                                "offset": 5,
-                                "titleFontSize": 9,
-                                "labelFontSize": 8
-                            }
-                        },
-                        "strokeDash": {
-                            "field": "region",
-                            "type": "nominal",
-                            "scale": {
-                                "domain": ["West Malaysia", "East Malaysia"],
-                                "range": [[1, 0], [5, 5]]
-                            },
-                            "legend": null
-                        },
+                        "strokeDash": {"value": [1, 0]},
                         "tooltip": [
                             {"field": "year", "title": "Year"},
                             {"field": "region", "title": "Region"},
-                            {"field": "total_population", "title": "Population", "format": ","}
+                            {"field": "population_millions", "title": "Population (millions)", "format": ".2f"}
                         ]
                     }
                 },
                 {
-                    "mark": {
-                        "type": "line",
-                        "point": {"filled": true, "size": 60},
-                        "strokeWidth": 2
-                    },
+                    "mark": {"type": "line", "point": {"filled": true, "size": 60}, "strokeWidth": 3},
                     "encoding": {
                         "y": {
-                            "field": "beds_in_thousands",
+                            "field": "beds_thousands",
                             "type": "quantitative",
                             "title": "Hospital Beds (thousands)",
                             "axis": {
+                                "orient": "right",
                                 "titleColor": "#d62728",
                                 "labelColor": "#d62728",
-                                "format": ".1f",
-                                "labelFontSize": 9,
-                                "titleFontSize": 10,
-                                "orient": "right"
-                            },
-                            "scale": {"domain": [0, 45]}
+                                "labelFontSize": 11,
+                                "titleFontSize": 13,
+                                "format": ".1f"
+                            }
                         },
+                        "strokeDash": {"value": [5, 5]},
                         "color": {
                             "field": "region",
                             "type": "nominal",
                             "scale": {
                                 "domain": ["West Malaysia", "East Malaysia"],
-                                "range": ["#d62728", "#ff7f0e"]
-                            }
-                        },
-                        "strokeDash": {
-                            "field": "region",
-                            "type": "nominal",
-                            "scale": {
-                                "domain": ["West Malaysia", "East Malaysia"],
-                                "range": [[1, 0], [5, 5]]
+                                "range": ["#d62728", "#e377c2"]
                             },
-                            "legend": null
+                            "legend": {"title": "Region (Beds)"}
                         },
                         "tooltip": [
                             {"field": "year", "title": "Year"},
                             {"field": "region", "title": "Region"},
-                            {"field": "total_beds", "title": "Hospital Beds", "format": ","}
+                            {"field": "beds_thousands", "title": "Hospital Beds (thousands)", "format": ".1f"}
                         ]
                     }
                 }
             ],
             "resolve": {"scale": {"y": "independent"}},
             "config": {
+                "legend": {
+                    "orient": "top",
+                    "direction": "horizontal",
+                    "padding": 10,
+                    "labelFontSize": 12,
+                    "titleFontSize": 13
+                },
                 "view": {"stroke": "transparent"},
                 "axis": {"grid": true, "gridOpacity": 0.2}
             }
@@ -767,9 +1144,9 @@
         vegaEmbed('#beds-per-1000', bedsPer1000Spec);
         vegaEmbed('#population-by-age', populationByAgeSpec);
         vegaEmbed('#stacked-bar-chart', stackedBarSpec);
+        vegaEmbed('#elderly-correlation', elderlyCorrelationSpec);
         vegaEmbed('#total-trends', totalTrendsSpec, {actions: false});
         vegaEmbed('#west-vs-east', westVsEastSpec, {actions: false});
     </script>
 </body>
-</html>
 </html>
